@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
 
 public class PlayerController : MonoBehaviour
 {
@@ -8,6 +10,9 @@ public class PlayerController : MonoBehaviour
     private Rigidbody2D rb;
     private Animator anim;
     private Collider2D coll;
+
+    [SerializeField] private int cherries = 0;
+    [SerializeField] private TextMeshProUGUI cherryText;
 
     //State machine
     private enum State {idle, running, jumping, falling}
@@ -34,6 +39,17 @@ public class PlayerController : MonoBehaviour
 
         AnimationState();
         anim.SetInteger("state", (int)state); //set animation based on enum state
+    }
+
+    //When player collects cherries
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if(collision.tag == "Collectable")
+        {
+            Destroy(collision.gameObject);
+            cherries++;
+            cherryText.text = cherries.ToString();
+        }
     }
 
     //Player movement
