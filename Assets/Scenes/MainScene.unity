@@ -134,7 +134,7 @@ GameObject:
   - component: {fileID: 72244948}
   - component: {fileID: 72244947}
   m_Layer: 0
-  m_Name: Grid
+  m_Name: Level
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -281,7 +281,7 @@ GameObject:
   - component: {fileID: 1706367841}
   - component: {fileID: 1706367840}
   - component: {fileID: 1706367839}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Foreground
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2336,7 +2336,7 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDrag: 0
   m_AngularDrag: 0.05
-  m_GravityScale: 1
+  m_GravityScale: 2
   m_Material: {fileID: 0}
   m_Interpolate: 0
   m_SleepingMode: 1
@@ -2354,8 +2354,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f40121076413f22419d76f48f239ebdd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rb: {fileID: 2043956274}
-  anim: {fileID: 2043956276}
+  ground:
+    serializedVersion: 2
+    m_Bits: 64
+  speed: 5
+  jumpForce: 10
 --- !u!95 &2043956276
 Animator:
   serializedVersion: 4
