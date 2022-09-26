@@ -15,7 +15,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private TextMeshProUGUI cherryText;
 
     //State machine
-    private enum State {idle, running, jumping, falling}
+    private enum State {idle, running, jumping, falling, hurt}
     private State state = State.idle;
 
     //Inspector Variables
@@ -23,6 +23,7 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField] private float speed = 5f;
     [SerializeField] private float jumpForce = 10f;
+    [SerializeField] private float hurtForce = 5f;
 
     // Start is called before the first frame update
     private void Start()
@@ -35,7 +36,10 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     private void Update()
     {
-        Movement();
+        if(state != State.hurt)
+        {
+            Movement();
+        }
 
         AnimationState();
         anim.SetInteger("state", (int)state); //set animation based on enum state
@@ -52,6 +56,34 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    //When player collides with an enemy
+    private void OnCollisionEnter2D(Collision2D other)
+    {
+        if(other.gameObject.tag == "Enemy")
+        {   
+            if(state == State.falling)
+            {
+                Destroy(other.gameObject);
+                Jump(); //extra jump after killing an enemy
+            }
+            else
+            {
+                state = State.hurt;
+
+                if(other.gameObject.transform.position.x > transform.position.x)
+                {
+                    //enemy is on the right so get damaged and knocked back left
+                    rb.velocity = new Vector2(-hurtForce, rb.velocity.y);
+                }
+                else
+                {
+                    //enemy is on the right so get damaged and knocked back left
+                    rb.velocity = new Vector2(hurtForce, rb.velocity.y);
+                }
+            }
+        }
+    }
+
     //Player movement
     private void Movement()
     {
@@ -64,24 +96,26 @@ public class PlayerController : MonoBehaviour
             transform.localScale = new Vector2(-1, 1);
         }
         //moving right
-        else if(hDirection > 0 )
+        if(hDirection > 0 )
         {
             rb.velocity = new Vector2(speed, rb.velocity.y);
             transform.localScale = new Vector2(1, 1);
-        }
-        else
-        {
-            
         }
 
         //jumping
         if(Input.GetButtonDown("Jump") && coll.IsTouchingLayers(ground))
         {
-            rb.velocity = new Vector2(rb.velocity.x, jumpForce);
-            state = State.jumping;
+            Jump();
         }
     }
 
+    private void Jump()
+    {
+        rb.velocity = new Vector2(rb.velocity.x, jumpForce);
+            state = State.jumping;
+    }
+
+    //State Machine
     /*checks if player is jumping to change to falling state, when player touches ground change to idle state, 
     if player is not mid-air then check horizontal velocity and change to running state*/
     private void AnimationState()
@@ -90,6 +124,7 @@ public class PlayerController : MonoBehaviour
         {
              if(rb.velocity.y < 0.1f)
              {
+                //Mid-air but now descending/falling
                 state = State.falling;
              }
         }
@@ -97,13 +132,21 @@ public class PlayerController : MonoBehaviour
         {
             if(coll.IsTouchingLayers(ground))
             {
+                //Finished falling and has touched the ground
                 state = State.idle;
             }
         }
-
+        else if(state == State.hurt)
+        {
+            if(Mathf.Abs(rb.velocity.x) < 0.1f)
+            {
+                //Finished being knocked back from touching enemy
+                state = State.idle;
+            }
+        }
         else if(Mathf.Abs(rb.velocity.x) > 2f)
         {
-            //Moving
+            //Moving or running along the ground in either direction
             state = State.running;
         }
         else
