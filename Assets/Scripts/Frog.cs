@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class Frog : Enemy
 {
-    private Rigidbody2D rb;
     private Collider2D coll;
     
     [SerializeField] private float leftCap;
@@ -22,7 +21,6 @@ public class Frog : Enemy
     protected override void Start()
     {
         base.Start();
-        rb = GetComponent<Rigidbody2D>();
         coll = GetComponent<Collider2D>();
     }
 
