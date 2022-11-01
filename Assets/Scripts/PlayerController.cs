@@ -61,9 +61,11 @@ public class PlayerController : MonoBehaviour
     {
         if(other.gameObject.tag == "Enemy")
         {   
+            Enemy enemy = other.gameObject.GetComponent<Enemy>();
+
             if(state == State.falling)
             {
-                Destroy(other.gameObject);
+                enemy.JumpedOn();
                 Jump(); //extra jump after killing an enemy
             }
             else
