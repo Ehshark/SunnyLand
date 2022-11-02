@@ -6,11 +6,14 @@ public class Enemy : MonoBehaviour
 {
     protected Rigidbody2D rb;
     protected Animator anim;
+    protected AudioSource death;
+
     // Start is called before the first frame update
     protected virtual void Start()
     {
         anim = GetComponent<Animator>();
         rb = GetComponent<Rigidbody2D>();
+        death = GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -22,6 +25,7 @@ public class Enemy : MonoBehaviour
     public void JumpedOn()
     {
         anim.SetTrigger("Death");
+        death.Play();
         rb.velocity = Vector2.zero;
     }
 

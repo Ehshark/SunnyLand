@@ -24,6 +24,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float speed = 5f;
     [SerializeField] private float jumpForce = 10f;
     [SerializeField] private float hurtForce = 5f;
+    [SerializeField] private AudioSource footstep;
+    [SerializeField] private AudioSource cherry;
 
     // Start is called before the first frame update
     private void Start()
@@ -50,6 +52,7 @@ public class PlayerController : MonoBehaviour
     {
         if(collision.tag == "Collectable")
         {
+            cherry.Play();
             Destroy(collision.gameObject);
             cherries++;
             cherryText.text = cherries.ToString();
@@ -155,5 +158,11 @@ public class PlayerController : MonoBehaviour
         {
             state = State.idle;
         }
+    }
+    
+    //play footstep sound
+    private void Footstep()
+    {
+        footstep.Play();
     }
 }
